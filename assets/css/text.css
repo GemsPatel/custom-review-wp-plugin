@@ -1,0 +1,20 @@
+body {
+	font-family: "Open Sans", sans-serif;
+}
+.c-gold {
+    color: #e88b02;
+    font-size: 17px;
+ }
+ 
+ .rv_text{
+	 
+	 max-width: 360px;
+    padding: 5px;
+    text-align: center;color:#000000ab; 
+	font-weight:600;
+	/* box-shadow: 1px 3px 7px 1px rgba(0, 0, 0, 0.1) */
+ }
+.txt_bold{
+	 color: #333;
+ }
+ 
