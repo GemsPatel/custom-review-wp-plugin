@@ -11,6 +11,7 @@ $short_code_check = 0;
 if( is_admin() && !class_exists( 'WP_List_Table' ) )
 require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
 add_action('admin_enqueue_scripts', 'review_admin_page_script');
+
 function review_admin_page_script()
 {    
 	if ( $_GET['page'] == 'Manage-Client' || $_GET['page'] == 'Manage-Category' || $_GET['page'] == 'Pending-Review' || $_GET['page'] == 'Manage-Review'  || $_GET['page'] == 'Review-Setting' || $_GET['page'] == 'edit-Review') {
@@ -25,6 +26,7 @@ function review_admin_page_script()
 		wp_enqueue_script( 'review_admin_dataTables.bootstrap_js', plugin_dir_url( __FILE__ ).'assets/datatable/dataTables.bootstrap.min.js');
     }
 }
+
 function rev_mail($app_url,$api_key,$curl_post_data){
 	$mailgunKey = "api:" . $api_key;
 	$service_url = $app_url.'/messages';
@@ -39,6 +41,7 @@ function rev_mail($app_url,$api_key,$curl_post_data){
     $response = json_decode($curl_response,true);
 	return $response; 
 }
+
 function rv_get_status($id,$status)
 {
 	global $wpdb;
@@ -105,6 +108,7 @@ function time_elapsed_string($datetime, $full = false) {
     if (!$full) $string = array_slice($string, 0, 1);
     return $string ? implode(', ', $string) . ' ago' : 'just now';
 }
+
 function rv_star($star_no,$class)
 {
 	$star_no = $star_no ? $star_no : 0;
@@ -113,66 +117,26 @@ function rv_star($star_no,$class)
 	}else{
 		//$review = round($star_no * 100/5,2);
 		$review = 0;
-		if($star_no >= 0.01   && $star_no <= 0.25 ){
-			$review = 8;
-		}
-		if($star_no >= 0.26   && $star_no <= 0.50 ){
-			$review = 10;
-			}
-		if($star_no >= 0.51   && $star_no <= 0.75 ){
-			$review = 12;
-		}
-		if($star_no >= 0.76   && $star_no <= 1 ){
-			$review = 20;
-		}
-		if($star_no >= 1.01   && $star_no <= 1.25 ){
-			$review = 28;
-		}
-		if($star_no >= 1.26   && $star_no <= 1.50 ){
-			$review = 30;
-		}
-		if($star_no >= 1.51   && $star_no <= 1.75 ){
-			$review = 32;
-		}
-		if($star_no >= 1.76   && $star_no <= 2 ){
-			$review = 40;
-		}
-		if($star_no >= 2.01   && $star_no <= 2.25 ){
-			$review = 48;
-		}
-		if($star_no >= 2.26   && $star_no <= 2.50 ){
-			$review = 50;
-		}
-		if($star_no >= 2.51   && $star_no <= 2.75 ){
-			$review = 52;
-		}
-		if($star_no >= 2.76   && $star_no <= 3 ){
-			$review = 60;
-		}
-		if($star_no >= 3.01   && $star_no <= 3.25 ){
-			$review = 68;
-		}
-		if($star_no >= 3.26   && $star_no <= 3.50 ){
-			$review = 70;
-		}
-		if($star_no >= 3.51  && $star_no <= 3.75 ){
-			$review = 72;
-		}
-		if($star_no >= 3.76   && $star_no <= 4 ){
-			$review = 80;
-		}
-		if($star_no >= 4.01   && $star_no <= 4.25 ){
-			$review = 88;
-		}
-		if($star_no >= 4.26   && $star_no <= 4.50 ){
-			$review = 90;
-		}
-		if($star_no >= 4.51   && $star_no <= 4.75 ){
-			$review = 92;
-		}
-		if($star_no >= 4.76   && $star_no <= 5 ){ 
-			$review = 100;
-		}
+		if($star_no >= 0.01 && $star_no <= 0.25 ){ $review = 8; }
+		if($star_no >= 0.26 && $star_no <= 0.50 ){ $review = 10; }
+		if($star_no >= 0.51 && $star_no <= 0.75 ){ $review = 12; }
+		if($star_no >= 0.76 && $star_no <= 1 ){ $review = 20; }
+		if($star_no >= 1.01 && $star_no <= 1.25 ){ $review = 28; }
+		if($star_no >= 1.26 && $star_no <= 1.50 ){ $review = 30; }
+		if($star_no >= 1.51 && $star_no <= 1.75 ){ $review = 32; }
+		if($star_no >= 1.76 && $star_no <= 2 ){ $review = 40; }
+		if($star_no >= 2.01 && $star_no <= 2.25 ){ $review = 48; }
+		if($star_no >= 2.26 && $star_no <= 2.50 ){ $review = 50; }
+		if($star_no >= 2.51 && $star_no <= 2.75 ){ $review = 52; }
+		if($star_no >= 2.76 && $star_no <= 3 ){ $review = 60; }
+		if($star_no >= 3.01 && $star_no <= 3.25 ){ $review = 68; }
+		if($star_no >= 3.26 && $star_no <= 3.50 ){ $review = 70; }
+		if($star_no >= 3.51 && $star_no <= 3.75 ){ $review = 72; }
+		if($star_no >= 3.76 && $star_no <= 4 ){ $review = 80; }
+		if($star_no >= 4.01 && $star_no <= 4.25 ){ $review = 88; }
+		if($star_no >= 4.26 && $star_no <= 4.50 ){ $review = 90; }
+		if($star_no >= 4.51 && $star_no <= 4.75 ){ $review = 92; }
+		if($star_no >= 4.76 && $star_no <= 5 ){  $review = 100; }
 	}  
 	return $return = '
 	<style>
@@ -248,10 +212,15 @@ function rev_custom($rv_view_data)
 {
 	global $wpdb;
 	if($GLOBALS['short_code_check'] == 0){
-	   include'header.php';
+	   	include'header.php';
 		$GLOBALS['short_code_check'] = 1;
 	}
-	include'front_view.php';
+
+	if( isset( $GLOBALS['_GET']['view'] ) && $GLOBALS['_GET']['view'] == "all" ){
+		include'view_all.php';
+	} else {
+		include'front_view.php';
+	}
 	return $return_v;    
 }
 
@@ -262,6 +231,7 @@ function rev_badge($rv_badge_data)
 	   include'header.php';
 		$GLOBALS['short_code_check'] = 1;
 	}
+
 	include'badge.php';
 	return $return_bedge;
 }
@@ -309,6 +279,7 @@ function review_setting_fun(){
 	global $wpdb;
     include'review_setting.php';
 }
+
 /*****************end add pricing list*****************/  
 /*****************edit pricing list*****************/  
 /*****************end edit pricing list*****************/ 
