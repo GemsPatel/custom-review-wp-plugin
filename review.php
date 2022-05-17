@@ -36,14 +36,12 @@ if (isset($_POST['reply_submit']))
    		<a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">x</a>
    		Reply added successfully.</div>';
 }
-
 ?>
 <style>
    .width_160{
    width:160px;
    }
 </style>
-
 <div class="col-md-12">
    <div class="row m-r-0 m-t-20">
       <div class="col-md-12">
@@ -91,7 +89,6 @@ $table_name = $wpdb->prefix . 'client';
 $rowCat = $wpdb->get_results("select * from $table_name where act='1' ", ARRAY_A);
 foreach ($rowCat as $clnt)
 {
-
     if (isset($_GET['clientf']) and $_GET['clientf'] == $clnt['id'])
     {
 ?>

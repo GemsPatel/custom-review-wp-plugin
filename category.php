@@ -118,10 +118,10 @@ else
                            <td></td>
                         </tr>
                         <?php $i = 1;
-$table_name1 = $wpdb->prefix . 'services';
-$rowClt = $wpdb->get_results("select * from $table_name1 where act='1' ", ARRAY_A);
-foreach ($rowClt as $client)
-{ ?>                
+                        $table_name1 = $wpdb->prefix . 'services';
+                        $rowClt = $wpdb->get_results("select * from $table_name1 where act='1' ", ARRAY_A);
+                        foreach ($rowClt as $client)
+                        { ?>                
                         <tr>
                            <td><?php echo $i++; ?></td>
                            <td>				  <?php echo $client['name']; ?>                  </td>

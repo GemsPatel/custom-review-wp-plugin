@@ -4,7 +4,9 @@ class Pending_Review_List_Table extends WP_List_Table
 	private $order;
 	private $orderby;
 	private $posts_per_page = 10;
-
+	/**
+	 * Undocumented function
+	 */
 	public function __construct()
 	{
 		parent :: __construct( array(
@@ -17,13 +19,16 @@ class Pending_Review_List_Table extends WP_List_Table
 		$this->prepare_items();
 		$this->search_box('Search', 'search');
 		$this->display();
-		
 	}
 
+	/**
+	 * Undocumented function
+	 *
+	 * @return void
+	 */
 	private function get_sql_results()
 	{
 		global $wpdb;
-		
 		$sw = "";
 		if($_REQUEST['clientf'] != 'All' && $_REQUEST['clientf'] != ''){
 			$sw .=' AND client_id = '.$_REQUEST['clientf'].'';
@@ -31,21 +36,14 @@ class Pending_Review_List_Table extends WP_List_Table
 		if($_REQUEST['categoryf'] != 'All' && $_REQUEST['categoryf'] != ''){
 			$sw .=' AND service_id = '.$_REQUEST['categoryf'].'';
 		} 
-		
-		
 		if($_REQUEST['page'] == 'Manage-Review'){
 			$review_status = 1;
 		}else{
 			$review_status = 0;
 		}
-		
-		
-		
-		
 		$table_name = $wpdb->prefix.'rvcomment';
 		$table_client = $wpdb->prefix.'client';
 		$table_services = $wpdb->prefix.'services';
-		
 		$args = array( $table_name.'.id',$table_name.'.date_time',$table_name.'.reviewer_name',$table_name.'.reviewer_email',$table_name.'.review_phone',$table_name.'.review_rating',$table_name.'.review_text',$table_name.'.client_id',$table_name.'.service_id',$table_client.'.clientName',$table_services.'.name');
 		$search = '';
 		if(isset($_REQUEST['s']) && $_REQUEST['s'] != ''){
@@ -57,20 +55,22 @@ class Pending_Review_List_Table extends WP_List_Table
 			$search = rtrim($search, ' OR ');
 			$search .= ') ';
 		}
-
 		$sql_select = implode( ', ', $args );
-		
 		$sql_results = $wpdb->get_results("
 				SELECT $sql_select
 				FROM $table_name
 				LEFT JOIN $table_client ON ($table_name.client_id=$table_client.id)
 				LEFT JOIN $table_services ON ($table_name.service_id=$table_services.id)
-				
 				WHERE $table_name.act ='1' AND $table_name.review_status='$review_status' $search $sw ORDER BY $table_name.$this->orderby $this->order"
 		);
 		return $sql_results;
 	}
 
+	/**
+	 * Undocumented function
+	 *
+	 * @return void
+	 */
 	public function set_order()
 	{
 		$order = 'DESC';
@@ -79,6 +79,11 @@ class Pending_Review_List_Table extends WP_List_Table
 		$this->order = esc_sql( $order );
 	}
 
+	/**
+	 * Undocumented function
+	 *
+	 * @return void
+	 */
 	public function set_orderby()
 	{
 		$orderby = 'id';
@@ -86,7 +91,6 @@ class Pending_Review_List_Table extends WP_List_Table
 			$orderby = $_GET['orderby'];
 		$this->orderby = esc_sql( $orderby );
 	}
-
 	/**
 	 * @see WP_List_Table::ajax_user_can()
 	 */
@@ -144,7 +148,6 @@ class Pending_Review_List_Table extends WP_List_Table
 			'review_text' => array( 'review_text', true ),
 			'clientName' => array( 'clientName', true ),
 			'name' => array( 'name', true )
-			
 		);
 		return $sortable;
 	}
@@ -163,11 +166,9 @@ class Pending_Review_List_Table extends WP_List_Table
 			$hidden,
 			$sortable 
 		);
-
 		// SQL results
 		$posts = $this->get_sql_results();
 		empty( $posts ) AND $posts = array();
-
 		# >>>> Pagination
 		$per_page     = $this->posts_per_page;
 		$current_page = $this->get_pagenum();
@@ -180,18 +181,13 @@ class Pending_Review_List_Table extends WP_List_Table
 		$last_post = $current_page * $per_page;
 		$first_post = $last_post - $per_page + 1;
 		$last_post > $total_items AND $last_post = $total_items;
-
 		// Setup the range of keys/indizes that contain 
 		// the posts on the currently displayed page(d).
 		// Flip keys with values as the range outputs the range in the values.
 		$range = array_flip( range( $first_post - 1, $last_post - 1, 1 ) );
-
 		// Filter out the posts we're not displaying on the current page.
 		$posts_array = array_intersect_key( $posts, $range );
 		# <<<< Pagination
-		
-		
-
 		// Prepare the data
 		$permalink = __( 'Edit:' );
 		foreach ( $posts_array as $key => $post )
@@ -234,7 +230,7 @@ class Pending_Review_List_Table extends WP_List_Table
 		</div>
 		<?php
 	}
-
+	
 	/**
 	 * Disables the views for 'side' context as there's not enough free space in the UI
 	 * Only displays them on screen/browser refresh. Else we'd have to do this via an AJAX DB update.
@@ -247,7 +243,6 @@ class Pending_Review_List_Table extends WP_List_Table
 		$views = $this->get_views();
 		if ( empty( $views ) )
 			return;
-
 		$this->views();
 	}
 } 
