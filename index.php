@@ -392,10 +392,7 @@ add_action('wp_ajax_nopriv_load_more_review', 'load_more_review'); // for ALL us
 function load_more_review(){
 
 	global $wpdb;
-	$rv_view_data = $_POST['rv_view_data'];
-
-	$page = (int)$_POST['page'];
-	$offset = (int)$_POST['offset'];
+	$data = $_POST;
 
 	$dbTable = [
 		'rvcomment' => $wpdb->prefix.'rvcomment', //table_name1
@@ -403,59 +400,57 @@ function load_more_review(){
 		'client' => $wpdb->prefix.'client', //table_client
 	];
 	
-	$where = "";
-	if (array_key_exists("category",$rv_view_data)){
-		if( $rv_view_data['category'] == 0 ){
-			$rowClt = $wpdb->get_results("select * from ".$dbTable['rvcomment']." where review_status=1 AND act=1 order by id DESC LIMIT 10", ARRAY_A);
+	$limit = "LIMIT " . $data['offset'] . "," . $data['perpage'];
+	if (array_key_exists("category",$data['rv_view_data'])){
+		if( $data['rv_view_data']['category'] == 0 ){
+			$rowClt = $wpdb->get_results("select * from ".$dbTable['rvcomment']." where review_status=1 AND act=1 order by id DESC ".$limit, ARRAY_A);
 		}else{
-			$rowClt = $wpdb->get_results("select * from ".$dbTable['rvcomment']." where review_status=1 AND act=1 AND service_id='".$rv_view_data['category']."' order by id DESC LIMIT 10", ARRAY_A);
+			$rowClt = $wpdb->get_results("select * from ".$dbTable['rvcomment']." where review_status=1 AND act=1 AND service_id='".$data['rv_view_data']['category']."' order by id DESC ".$limit, ARRAY_A);
 		}
-	} else if (array_key_exists("clientid",$rv_view_data)) {
-		$rowClt = $wpdb->get_results("select * from ".$dbTable['rvcomment']." where review_status=1 AND act=1 AND client_id='".$rv_view_data['clientid']."' order by id DESC ", ARRAY_A);
+	} else if (array_key_exists("clientid",$data['rv_view_data'])) {
+		$rowClt = $wpdb->get_results("select * from ".$dbTable['rvcomment']." where review_status=1 AND act=1 AND client_id='".$data['rv_view_data']['clientid']."' order by id DESC ".$limit, ARRAY_A);
 	} else {
-		$rowClt = $wpdb->get_results("select * from ".$dbTable['rvcomment']." where review_status=1 AND act=1", ARRAY_A);
+		$rowClt = $wpdb->get_results("select * from ".$dbTable['rvcomment']." where review_status=1 AND act=1 ".$limit, ARRAY_A);
 	}
 	
-	$return_v ='
-	<div class="" style=" padding-left:15px; padding-right:15px;">
+	// echo $wpdb->last_query;
+
+	$return_v = '';
+	if( COUNT( $rowClt ) >0 ){
+		$return_v = '
 		<div class="row">
-			<div class="col-sm-12" style="padding:0;">
-				<div id="" class="owl-carousel owl-theme">'; 
-					foreach($rowClt as $client) {
-						$return_v .='
-						<div class="item">
-							<div class="media">
-								<div class="media-body">
-									<div class="testimonial" >
-										<p>
-											<span class="star-box">
-												'.rv_star($client['review_rating'],'slider'.$client['id'].'_'.rand()).' 
-											</span>
-											<span itemprop="reviewBody">
-												'.$client['review_text'].'
-											</span>
-										</p>
-									</div>
-									<div class="user">
-										<div class="user-profile"></div><p class="overview"> <span  >
-											<b class="u_name" itemprop="name">'.$client['reviewer_name'].'</b> <span> <br>';
-												
-											if($client['reply'] !='' AND $client['reply'] !=null){ 
-												$return_v .='
-													<span data-toggle="popover" data-placement="top" title="Reply from expert" data-content="'.$client['reply'].'" 
-														style="cursor:pointer;font-size:13px;" >1 
-														<i class="fa fa-fw fa-comments"></i> 
-														<a>Click to Read Experts Reply</a>
-													<span>';
-											}
-											$return_v .='</p>
-										</div>
-									</div>
-								</div>
-							</div>';
-					}
-				$return_v .="</div>
-			</div>";
+			<div class="col-md-12">';
+				foreach($rowClt as $client) {
+					$return_v .='
+					<div class="col-md-3">
+						<div class="testimonial" >
+							<p>
+								<span class="star-box">
+									'.rv_star($client['review_rating'],'slider'.$client['id'].'_'.rand()).' 
+								</span>
+								<span itemprop="reviewBody">
+									'.$client['review_text'].'
+								</span>
+							</p>
+						</div>
+						<div class="user">
+							<div class="user-profile"></div><p class="overview">
+								<b class="u_name" itemprop="name">'.$client['reviewer_name'].'</b> <br>';
+								if($client['reply'] !='' AND $client['reply'] !=null){ 
+									$return_v .='
+										<span data-toggle="popover" data-placement="top" title="Reply from expert" data-content="'.$client['reply'].'" 
+											style="cursor:pointer;font-size:13px;" >1 
+											<i class="fa fa-fw fa-comments"></i> 
+											<a>Click to Read Experts Reply</a>
+										<span>';
+								}
+								$return_v .='
+							</div>
+						</div>';
+				}
+			$return_v .="</div>
+		</div>";
+	}
 	echo $return_v;die;	
 }
 ?>

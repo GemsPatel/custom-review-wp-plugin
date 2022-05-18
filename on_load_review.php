@@ -43,35 +43,49 @@ if($sum !='0' AND $total_c !='0') {
 	$average = $sum/$total_c;
 }
 
-$return_v .='<div class"load-all-review">
+$return_v .='<div class="load-all-review">
 			</div>';
 
-$return_v .='<div class"row">
+$return_v .='<div class="row display-load-more-btn">
 				<div class="col-md-12 text-center" style="margin-top: 15px;">
-					<button type="button" class="btn btn-primary" id="load-more">Load All</button>
+					<button type="button" class="btn btn-primary" id="load-more">Load More</button>
 				</div>
 			</div>';
 $return_v .='
 <script type="application/ld+json">[{"@context":"http:\/\/schema.org","@type":"Review","itemReviewed":{"@type":"LocalBusiness","name":"'.$rowClient['clientName'].'","url": "'.get_permalink(get_the_ID()).'",
-"image": "'.site_url().'/wp-content/plugins/theme-options/img/guarantee-shield-big.png", "priceRange": "££" },"reviewRating":{"@type":"aggregateRating","ratingValue":'.round($average,2).',"bestRating":5,"reviewCount":'.$total_c.'},"author":"Users"}]</script>
+"image": "'.site_url().'/wp-content/plugins/theme-options/img/guarantee-shield-big.png", "priceRange": "££" },
+"reviewRating":{"@type":"aggregateRating","ratingValue":'.round($average,2).',"bestRating":5,"reviewCount":'.$total_c.'},"author":"Users"}]</script>
 ';
 $return_v .="<script>
 	
 	jQuery('#load-more').click(function() {
+		loadMoreReview();		
+	});
 
+	function loadMoreReview(){
+		var perpage = $('#per_page').val();
+		var offset = $('#offset').val();
 		var data = {
-			'action'   : 'load_more_review', // the name of your PHP function!
-			'perpage'   : $('#per_page').val(),
-			'offset'   : $('#offset').val(),
+			'action' : 'load_more_review', // the name of your PHP function!
+			'perpage' : perpage,
+			'offset' : offset,
 			'rv_view_data' : ".json_encode($rv_view_data)."
 		};
 		
 		jQuery.post(ajaxurl, data, function(response) {
 			console.log(response);
+			if( response == '' ){
+				$('.display-load-more-btn').addClass('hide');
+			}else{
+				offset = ( parseInt( offset ) + parseInt( perpage ) );
+				$('#offset').val( offset );
+				$('.load-all-review').append(response);
+			}
 		});
-	});
+	}
 	
    	jQuery(document).ready(function($) {
+		loadMoreReview();
 	   	$('.user-profile').each( function(){
 			$(this).css('background-color', getRandomColor());
 			var fn = $(this).parent().find('.u_name').text();
