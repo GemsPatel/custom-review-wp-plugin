@@ -434,17 +434,21 @@ function load_more_review(){
 							</p>
 						</div>
 						<div class="user">
-							<div class="user-profile"></div><p class="overview">
-								<b class="u_name" itemprop="name">'.$client['reviewer_name'].'</b> <br>';
-								if($client['reply'] !='' AND $client['reply'] !=null){ 
-									$return_v .='
-										<span data-toggle="popover" data-placement="top" title="Reply from expert" data-content="'.$client['reply'].'" 
-											style="cursor:pointer;font-size:13px;" >1 
-											<i class="fa fa-fw fa-comments"></i> 
-											<a>Click to Read Experts Reply</a>
-										<span>';
-								}
-								$return_v .='
+							<div class="user-profile" style="background: #'.rand( 000000,999999 ).';">'.$client['reviewer_name'][0].'</div>
+								<p class="overview"> 
+									<span>
+										<b class="u_name" itemprop="name">'.$client['reviewer_name'].'</b> 
+									</span> 
+									<br>';
+									if($client['reply'] !='' AND $client['reply'] !=null){ 
+										$return_v .='
+											<span data-toggle="popover" data-placement="top" title="Reply from expert" data-content="'.$client['reply'].'" 
+												style="cursor:pointer;font-size:13px;" >1 
+												<i class="fa fa-fw fa-comments"></i> 
+												<a>Click to Read Experts Reply</a>
+											<span>';
+									}
+								$return_v .='</p>
 							</div>
 						</div>';
 				}

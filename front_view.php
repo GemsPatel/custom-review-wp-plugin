@@ -65,17 +65,20 @@ $return_v ='
 									</p>
 								</div>
 								<div class="user">
-									<div class="user-profile"></div><p class="overview"> <span  >
-										<b class="u_name" itemprop="name">'.$client['reviewer_name'].'</b> <span> <br>';
-											
-										if($client['reply'] !='' AND $client['reply'] !=null){ 
-											$return_v .='
-												<span data-toggle="popover" data-placement="top" title="Reply from expert" data-content="'.$client['reply'].'" 
-													style="cursor:pointer;font-size:13px;" >1 
-													<i class="fa fa-fw fa-comments"></i> 
-													<a>Click to Read Experts Reply</a>
-												<span>';
-										}
+									<div class="user-profile"></div>
+										<p class="overview"> 
+											<span>
+												<b class="u_name" itemprop="name">'.$client['reviewer_name'].'</b> 
+											</span> 
+											<br>';
+											if($client['reply'] !='' AND $client['reply'] !=null){ 
+												$return_v .='
+													<span data-toggle="popover" data-placement="top" title="Reply from expert" data-content="'.$client['reply'].'" 
+														style="cursor:pointer;font-size:13px;" >1 
+														<i class="fa fa-fw fa-comments"></i> 
+														<a>Click to Read Experts Reply</a>
+													<span>';
+											}
 										$return_v .='</p>
 									</div>
 								</div>
