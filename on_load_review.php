@@ -43,8 +43,7 @@ if($sum !='0' AND $total_c !='0') {
 	$average = $sum/$total_c;
 }
 
-$return_v .='<div class="load-all-review">
-			</div>';
+$return_v .='<div class="load-all-review"></div>';
 
 $return_v .='<div class="row display-load-more-btn">
 				<div class="col-md-12 text-center" style="margin-top: 15px;">
@@ -73,7 +72,6 @@ $return_v .="<script>
 		};
 		
 		jQuery.post(ajaxurl, data, function(response) {
-			console.log(response);
 			if( response == '' ){
 				$('.display-load-more-btn').addClass('hide');
 			}else{
@@ -102,13 +100,13 @@ $return_v .="<script>
 		return color;
 	}
 
-	jQuery(document).ready(function($){
-		$('[data-toggle=";?> <?php $return_v .='"popover"'; ?><?php $return_v .="]').popover();   
-		$('.Stars').each(function(){
-			var wd = $(this).data('width');
-			//$(this+':after').css('width', wd+'%');
-		});
+	$('.Stars').each(function(){
+		var wd = $(this).data('width');
+		//$(this+':after').css('width', wd+'%');
 	});
-
+	
+	$(function () {
+		$('[data-toggle=\"popover\"]').popover()
+	});
 </script>
-"; ?>                                		                                                    		                            
+"; ?>

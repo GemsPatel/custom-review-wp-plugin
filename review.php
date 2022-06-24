@@ -3,7 +3,8 @@ if (isset($_GET['delete']))
 {
     $del = $_GET['delete'];
     $wp_rvcomment = $wpdb->prefix . 'rvcomment';
-    $wpdb->query("UPDATE $wp_rvcomment SET act='0' WHERE id='$del'");
+    $wpdb->query("DELETE FROM $wp_rvcomment WHERE id='$del'");
+   //  $wpdb->query("UPDATE $wp_rvcomment SET act='0' WHERE id='$del'");
     echo '<div class="alert alert-danger fade in alert-dismissable" style="margin-top:18px;">
    			<a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">x</a>
    			 Review deleted successfully.</div>';

@@ -440,13 +440,11 @@ function load_more_review(){
 										<b class="u_name" itemprop="name">'.$client['reviewer_name'].'</b> 
 									</span> 
 									<br>';
-									if($client['reply'] !='' AND $client['reply'] !=null){ 
+									if( $client['reply'] !='' && $client['reply'] !=null){ 
 										$return_v .='
-											<span data-toggle="popover" data-placement="top" title="Reply from expert" data-content="'.$client['reply'].'" 
-												style="cursor:pointer;font-size:13px;" >1 
-												<i class="fa fa-fw fa-comments"></i> 
-												<a>Click to Read Experts Reply</a>
-											<span>';
+										<span data-toggle="popover" data-placement="top" title="'.$client['reply'].'" data-content="'.$client['reply'].'" 
+											style="cursor:pointer;font-size:13px;">1 <i class="fa fa-fw fa-comments"></i> 
+										<span>';
 									}
 								$return_v .='</p>
 							</div>
@@ -455,6 +453,6 @@ function load_more_review(){
 			$return_v .="</div>
 		</div>";
 	}
-	echo $return_v;die;	
+	echo $return_v;
 }
 ?>
