@@ -40,7 +40,7 @@ if (isset($_POST['reply_submit']))
 ?>
 <style>
    .width_160{
-   width:160px;
+      width:160px;
    }
 </style>
 <div class="col-md-12">
@@ -59,22 +59,16 @@ if (isset($_POST['reply_submit']))
                         <select required class="form-control" name="categoryf">
                            <option value="All" >All</option>
                            <?php
-$table_name = $wpdb->prefix . 'services';
-$rowCat = $wpdb->get_results("select * from $table_name where act='1' ", ARRAY_A);
-foreach ($rowCat as $cat)
-{
-    if (isset($_GET['categoryf']) and $_GET['categoryf'] == $cat['id'])
-    {
-?>
-                           <option value="<?php echo $cat['id']; ?>" selected><?php echo $cat['name']; ?></option>
-                           <?php
-    }
-    else
-    { ?> 
-                           <option value="<?php echo $cat['id']; ?>" ><?php echo $cat['name']; ?></option>
-                           <?php
-    }
-} ?>
+                           $table_name = $wpdb->prefix . 'services';
+                           $rowCat = $wpdb->get_results("select * from $table_name where act='1' ", ARRAY_A);
+                           foreach ($rowCat as $cat)
+                           {
+                              if (isset($_GET['categoryf']) and $_GET['categoryf'] == $cat['id']) { ?>
+                                 <option value="<?php echo $cat['id']; ?>" selected><?php echo $cat['name']; ?></option>
+                              <?php } else { ?> 
+                                 <option value="<?php echo $cat['id']; ?>" ><?php echo $cat['name']; ?></option>
+                              <?php }
+                           } ?>
                         </select>
                      </div>
                   </div>
@@ -86,22 +80,16 @@ foreach ($rowCat as $cat)
                         <select required class="form-control" name="clientf">
                            <option value="All" >All</option>
                            <?php
-$table_name = $wpdb->prefix . 'client';
-$rowCat = $wpdb->get_results("select * from $table_name where act='1' ", ARRAY_A);
-foreach ($rowCat as $clnt)
-{
-    if (isset($_GET['clientf']) and $_GET['clientf'] == $clnt['id'])
-    {
-?>
-                           <option value="<?php echo $clnt['id']; ?>" selected><?php echo $clnt['clientName']; ?></option>
-                           <?php
-    }
-    else
-    { ?> 
-                           <option value="<?php echo $clnt['id']; ?>" ><?php echo $clnt['clientName']; ?></option>
-                           <?php
-    }
-} ?>
+                           $table_name = $wpdb->prefix . 'client';
+                           $rowCat = $wpdb->get_results("select * from $table_name where act='1' ", ARRAY_A);
+                           foreach ($rowCat as $clnt)
+                           {
+                              if (isset($_GET['clientf']) and $_GET['clientf'] == $clnt['id']) { ?>
+                                 <option value="<?php echo $clnt['id']; ?>" selected><?php echo $clnt['clientName']; ?></option>
+                              <?php } else { ?> 
+                                 <option value="<?php echo $clnt['id']; ?>" ><?php echo $clnt['clientName']; ?></option>
+                              <?php }
+                           } ?>
                         </select>
                      </div>
                   </div>
@@ -117,8 +105,8 @@ foreach ($rowCat as $clnt)
                   <form method="get">
                      <input type="hidden" name="page" value="<?php echo $_REQUEST['page'] ?>" />
                      <?php
-include ('datatable.php');
-?>
+                     include ('datatable.php');
+                     ?>
                   </form>
                </div>
             </div>

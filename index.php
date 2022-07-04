@@ -140,41 +140,6 @@ function rv_star($star_no,$class)
 	}  
 	return $return = '
 	<style>
-		:root {
-			--star-color: #e88b02;
-			--star-background: #e88b02;
-		}
-		.Stars {
-			--percent: calc(var(--rating) / 5 * 100%);
-			display: inline-block;
-			font-family: Times;  
-			line-height: 1;
-			position: relative;
-			font-weight: 800;
-			font-size: 115%;
-			*transform: scale(1.3);
-			transform-origin: center;
-		}
-		.Stars::before {
-			content: "☆☆☆☆☆";
-			letter-spacing: 0px;
-			background: linear-gradient(90deg, var(--star-background) var(--percent), var(--star-color) var(--percent));
-			-webkit-background-clip: text;
-			-webkit-text-fill-color: transparent;
-			font-weight:100;
-			white-space: nowrap;
-		}
-		.Stars::after {
-			content: "★★★★★";
-			letter-spacing: 0px;
-			background: linear-gradient(90deg, var(--star-background) var(--percent), var(--star-color) var(--percent));
-			-webkit-background-clip: text;
-			-webkit-text-fill-color: transparent;
-			position: absolute;
-			left: 0;
-			font-weight:100;
-			white-space: nowrap;
-		}
 		.Stars.'.$class.'::after {
 				width:  '.$review.'%;
 			}
@@ -223,13 +188,9 @@ function rev_custom($rv_view_data)
 	if( isset( $GLOBALS['_GET']['view'] ) && $GLOBALS['_GET']['view'] == "all" ){
 		include'view_all.php';
 	} else if( isset( $GLOBALS['_GET']['view'] ) && $GLOBALS['_GET']['view'] == "onLoad" ){
-		include'front_view.php';
+		include 'front_view.php';
 	} else {
-		// if( isset( $GLOBALS['_POST']['load'] ) && $GLOBALS['_POST']['load'] == 1 ){
-		// 	$return_v = my_ajax_load_review_data();
-		// }else{
-			include'on_load_review.php';
-		// }
+		include 'on_load_review.php';
 	}
 
 	return $return_v; 
@@ -389,8 +350,10 @@ add_shortcode('REVCUSTOMTEXT','rev_text');
 add_action('wp_ajax_load_more_review', 'load_more_review');  // for logged in users only
 add_action('wp_ajax_nopriv_load_more_review', 'load_more_review'); // for ALL users
 
-function load_more_review(){
+add_action('wp_ajax_load_slider_review', 'load_slider_review');  // for logged in users only
+add_action('wp_ajax_nopriv_load_slider_review', 'load_slider_review'); // for ALL users
 
+function reviewDataQuery(){
 	global $wpdb;
 	$data = $_POST;
 
@@ -414,7 +377,59 @@ function load_more_review(){
 	}
 	
 	// echo $wpdb->last_query;
+	return $rowClt;
+}
 
+function load_slider_review(){
+	$rowClt = reviewDataQuery();
+	$return_v ='<div class="owl-carousel owl-theme">'; 
+	foreach($rowClt as $client) {
+		$return_v .='
+		<div class="item">
+			<div class="media">
+				<div class="media-body">
+					<div class="testimonial" >
+						<p>
+							<span class="star-box">
+								'.rv_star($client['review_rating'],'slider'.$client['id'].'_'.rand()).' 
+							</span>
+							<span itemprop="reviewBody">
+								'.$client['review_text'].'
+							</span>
+						</p>
+					</div>
+					<div class="user">
+						<div class="user-profile" style="background: #'.rand( 000000,999999 ).';">'.$client['reviewer_name'][0].'</div>
+							<p class="overview"> 
+								<span>
+									<b class="u_name" itemprop="name">'.$client['reviewer_name'].'</b> 
+								</span> 
+								<br>';
+								if( $client['reply'] !='' && $client['reply'] !=null){ 
+									$return_v .='
+									<span data-toggle="popover" data-placement="top" title="'.$client['reply'].'" data-content="'.$client['reply'].'" 
+										style="cursor:pointer;font-size:13px;">1 <i class="fa fa-fw fa-comments"></i> 
+									<span>';
+								}
+							$return_v .='</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>';
+	}
+	$return_v.='<div>';
+
+	echo $return_v;die;
+}
+
+/**
+ * 
+ * @return void
+ */
+function load_more_review(){
+
+	$rowClt = reviewDataQuery();
 	$return_v = '';
 	if( COUNT( $rowClt ) >0 ){
 		$return_v = '
@@ -453,6 +468,7 @@ function load_more_review(){
 			$return_v .="</div>
 		</div>";
 	}
-	echo $return_v;
+
+	echo $return_v;die;
 }
 ?>
