@@ -437,7 +437,7 @@ function load_more_review(){
 			<div class="col-md-12">';
 				foreach($rowClt as $client) {
 					$return_v .='
-					<div class="col-md-3">
+					<div class="col-md-4">
 						<div class="testimonial" >
 							<p>
 								<span class="star-box">
