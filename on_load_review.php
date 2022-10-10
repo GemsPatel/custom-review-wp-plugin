@@ -170,7 +170,7 @@ $return_v .='<div class="row">
 														<br>';
 														if( $client['reply'] != '' && $client['reply'] != null){ 
 															$return_v .='
-															<span data-toggle="popover" data-placement="top" title="'.$client['reviewer_name'].'" data-content="'.$client['reply'].'"
+															<span  data-toggle="popover" data-placement="top" title="'.$client['reviewer_name'].'" data-content="'.$client['reply'].'"
 																style="cursor:pointer;font-size:13px;">1 <i class="fa fa-fw fa-comments"></i> 
 															<span>';
 														} 
@@ -246,17 +246,13 @@ $return_v .="<script>
 		});
 	}
 	
-	// $('body').popover({
-	// 	html: true,
-	// });
-
 	jQuery(document).ready(function($) {
 		
-		$('[data-toggle=\"popover\"]').popover({
-			html: true,
-			trigger: 'hover',
-			// title: $(this).attr('data-title')+' <a class=\"close\" href=\"#\");\">&times;</a>',
-		});
+		// $('[data-toggle=\"popover\"]').popover({
+		// 	html: true,
+		// 	trigger: 'hover',
+		// 	// title: $(this).attr('data-title')+' <a class=\"close\" href=\"#\");\">&times;</a>',
+		// });
 
 		// loadSliderReview();
 
@@ -314,8 +310,11 @@ $return_v .="<script>
 		return color;
 	}
 
-	// $(function () {
-	// 	$('[data-toggle=\"popover\"]').popover()
-	// });
+	$(function () {
+		// $('[data-toggle=\"popover\"]').popover()
+		$('.overview').on(\"click\", function(){
+			$('[data-toggle=\"popover\"]').popover('show');
+		});
+	});
 </script>
 "; ?>
