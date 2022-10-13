@@ -83,6 +83,12 @@ $pageLimit = 9;
 		display: none;
 	}
 
+	.entry .entry-content a.button, .entry .entry-content a {
+		text-decoration: none;
+		margin-top: -4px;
+		margin-right: -4px;
+	}
+
 	@media only screen and (min-width: 1168px) {
 		.entry .entry-content > *,
 		.entry .entry-summary > * {
@@ -170,7 +176,7 @@ $return_v .='<div class="row">
 														<br>';
 														if( $client['reply'] != '' && $client['reply'] != null){ 
 															$return_v .='
-															<span  data-toggle="popover" data-placement="top" title="'.$client['reviewer_name'].'" data-content="'.$client['reply'].'"
+															<span  data-toggle="popover" data-placement="top" title="'.$client['reviewer_name'].' <a href=\'#\' class=\'close\' data-dismiss=\'alert\'>&times;</a>" data-content="'.$client['reply'].'"
 																style="cursor:pointer;font-size:13px;">1 <i class="fa fa-fw fa-comments"></i> 
 															<span>';
 														} 
@@ -297,7 +303,13 @@ $return_v .="<script>
 	}
 
 	$(function () {
-		$('[data-toggle=\"popover\"]').popover()
+		$('[data-toggle=\"popover\"]').popover({
+			html : true,
+		})
 	});
+
+	$(document).on('click', '.popover .close' , function(){
+        $(this).parents('.popover').popover('hide');
+    });
 </script>
 "; ?>

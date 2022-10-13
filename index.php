@@ -407,7 +407,7 @@ function load_slider_review(){
 								<br>';
 								if( $client['reply'] !='' && $client['reply'] !=null){ 
 									$return_v .='
-									<span data-toggle="popover" data-placement="top" title="'.$client['reply'].'" data-content="'.$client['reply'].'" 
+									<span data-toggle="popover" data-placement="top" title="'.$client['reply'].'  <a href=\'#\' class=\'close\' data-dismiss=\'alert\'>&times;</a>" data-content="'.$client['reply'].'" 
 										style="cursor:pointer;font-size:13px;">1 <i class="fa fa-fw fa-comments"></i> 
 									<span>';
 								}
@@ -421,7 +421,9 @@ function load_slider_review(){
 	$return_v.="<div>
 	<script>
 		$(function () {
-			$('[data-toggle=\"popover\"]').popover();
+			$('[data-toggle=\"popover\"]').popover({
+				html : true,
+			});
 		});
 	</script>";
 
@@ -462,7 +464,7 @@ function load_more_review(){
 									<br>';
 									if( $client['reply'] != '' && $client['reply'] != null){ 
 										$return_v .='
-										<span data-toggle="popover" data-placement="top" title="'.$client['reviewer_name'].'" data-content="'.$client['reply'].'" 
+										<span data-toggle="popover" data-placement="top" title="'.$client['reviewer_name'].'  <a href=\'#\' class=\'close\' data-dismiss=\'alert\'>&times;</a>" data-content="'.$client['reply'].'" 
 											style="cursor:pointer;font-size:13px;">1 <i class="fa fa-fw fa-comments"></i> 
 										<span>';
 									}
@@ -474,7 +476,9 @@ function load_more_review(){
 		</div>
 		<script>
 			$(function () {
-				$('[data-toggle=\"popover\"]').popover();
+				$('[data-toggle=\"popover\"]').popover({
+					html : true,
+				});
 			});
 		</script>";
 	}
