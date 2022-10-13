@@ -247,45 +247,61 @@ $return_v .="<script>
 	}
 	
 	jQuery(document).ready(function($) {
+		
+		// $('[data-toggle=\"popover\"]').popover({
+		// 	html: true,
+		// 	trigger: 'hover',
+		// 	// title: $(this).attr('data-title')+' <a class=\"close\" href=\"#\");\">&times;</a>',
+		// });
+
+		// loadSliderReview();
+
 		$('.user-profile').each( function(){
 			$(this).css('background-color', getRandomColor());
 			var fn = $(this).parent().find('.u_name').text();
 			res = $(this).text( fn.charAt(0) );
 		});
+
+		// $('.Stars').each(function(){
+		// 	var wd = $(this).data('width');
+		// 	$(this+':after').css('width', wd+'%');
+		// });
 	});
 
-	$('#load_all_slider_review').owlCarousel({
-		autoplayHoverPause:true,
-		autoplay: true,
-		rewind: true, /* use rewind if you don't want loop */
-		margin: 20,
-		/*
-		animateOut: 'fadeOut',
-		animateIn: 'fadeIn',
-		*/
-		responsiveClass: true,
-		autoHeight: true,
-		autoplayTimeout: 7000,
-		smartSpeed: 800,
-		nav: true,
-		responsive: {
-		0: {
-			items: 1
-		},
-	
-		600: {
-			items: 3
-		},
-	
-		1024: {
-			items: 4
-		},
-	
-		1366: {
-			items: 4
-		}
-		}
-	});
+	if( $('#load_all_slider_review').length > 0 ){
+		$('#load_all_slider_review').owlCarousel({
+			autoplayHoverPause:true,
+			autoplay: true,
+			rewind: true, /* use rewind if you don't want loop */
+			margin: 20,
+			/*
+			animateOut: 'fadeOut',
+			animateIn: 'fadeIn',
+			*/
+			responsiveClass: true,
+			autoHeight: true,
+			autoplayTimeout: 7000,
+			smartSpeed: 800,
+			nav: true,
+			responsive: {
+			0: {
+				items: 1
+			},
+		
+			600: {
+				items: 3
+			},
+		
+			1024: {
+				items: 4
+			},
+		
+			1366: {
+				items: 4
+			}
+			}
+		});
+	}
 	
 	function getRandomColor() {
 		var letters = '0123456789ABCDEF';
@@ -298,6 +314,9 @@ $return_v .="<script>
 
 	$(function () {
 		$('[data-toggle=\"popover\"]').popover()
+		// $('.overview').on(\"click\", function(){
+		// 	$('[data-toggle=\"popover\"]').popover('show');
+		// });
 	});
 </script>
 "; ?>

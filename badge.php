@@ -13,21 +13,21 @@ $return_bedge .='<div class="" style="
 	 padding-left:15px;
 	 padding-right:15px;
  ">
-	<div class="row">
-		<div class="col-sm-12" style="padding:0;">
-		<div class="">
-              <div class="info-box" style="max-width:280px;">
-                <span class="info-box-icon bg-white"><img src="'.plugin_dir_url( __FILE__ ).'assets/star/img/sheild.png"></span>
-                <div class="info-box-content">
-                  <span class="info-box-text" style="color: #7a7a7a;"><b>Overall Rating</b></span>
-				    <span class="box_rating_wrapper"><b style="color: #e88b02;font-size: 17px;" >'.$average.'&nbsp;</b>
-											    '.rv_star($average,'overall-rating-text-'.rand(111, 999)).' 
-												 &nbsp;
-											  </span>
-                  <span  style="color: #7a7a7a;" class="info-box-text">Based on '.$total.' Reviews</span>
-                </div><!-- /.info-box-content -->
-              </div><!-- /.info-box -->
-            </div>
-			</div>
+<div class="row">
+	<div class="col-sm-12" style="padding:0;">
+	<div class="">
+			<div class="info-box" style="max-width:280px;">
+			<span class="info-box-icon bg-white"><img src="'.plugin_dir_url( __FILE__ ).'assets/star/img/sheild.png"></span>
+			<div class="info-box-content">
+				<span class="info-box-text" style="color: #7a7a7a;"><b>Overall Rating</b></span>
+				<span class="box_rating_wrapper"><b style="color: #e88b02;font-size: 17px;" >'.$average.'&nbsp;</b>
+											'.rv_star($average,'overall-rating-text-'.rand(111, 999)).' 
+												&nbsp;
+											</span>
+				<span  style="color: #7a7a7a;" class="info-box-text">Based on '.$total.' Reviews</span>
+			</div><!-- /.info-box-content -->
+			</div><!-- /.info-box -->
 		</div>
-	</div>';                               		                                                    		                            
+		</div>
+	</div>
+</div>';                               		                                                    		                            

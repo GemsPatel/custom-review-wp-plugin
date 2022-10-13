@@ -418,7 +418,12 @@ function load_slider_review(){
 			</div>
 		</div>';
 	}
-	$return_v.='<div>';
+	$return_v.="<div>
+	<script>
+		$(function () {
+			$('[data-toggle=\"popover\"]').popover();
+		});
+	</script>";
 
 	echo $return_v;die;
 }
@@ -455,9 +460,9 @@ function load_more_review(){
 										<b class="u_name" itemprop="name">'.$client['reviewer_name'].'</b> 
 									</span> 
 									<br>';
-									if( $client['reply'] !='' && $client['reply'] !=null){ 
+									if( $client['reply'] != '' && $client['reply'] != null){ 
 										$return_v .='
-										<span data-toggle="popover" data-placement="top" title="'.$client['reply'].'" data-content="'.$client['reply'].'" 
+										<span data-toggle="popover" data-placement="top" title="'.$client['reviewer_name'].'" data-content="'.$client['reply'].'" 
 											style="cursor:pointer;font-size:13px;">1 <i class="fa fa-fw fa-comments"></i> 
 										<span>';
 									}
@@ -466,7 +471,12 @@ function load_more_review(){
 						</div>';
 				}
 			$return_v .="</div>
-		</div>";
+		</div>
+		<script>
+			$(function () {
+				$('[data-toggle=\"popover\"]').popover();
+			});
+		</script>";
 	}
 
 	echo $return_v;die;
