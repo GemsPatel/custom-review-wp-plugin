@@ -407,8 +407,12 @@ function load_slider_review(){
 								<br>';
 								if( $client['reply'] !='' && $client['reply'] !=null){ 
 									$return_v .='
-									<span data-toggle="popover" data-placement="top" title="'.$client['reply'].'  <a href=\'#\' class=\'close\' data-dismiss=\'alert\'>&times;</a>" data-content="'.$client['reply'].'" 
-										style="cursor:pointer;font-size:13px;">1 <i class="fa fa-fw fa-comments"></i> 
+									<span data-toggle="popover" data-placement="top" title="'.$client['reply'].'  <a href=\'#\' class=\'close\' data-dismiss=\'alert\'>&times;</a>" data-content="'.$client['reply'].'" style="cursor:pointer;font-size:13px;">
+										<a>
+											1 
+											<i class="fa fa-fw fa-comments"></i> 
+											Click to Read Experts Reply
+										</a>
 									<span>';
 								}
 							$return_v .='</p>
@@ -464,8 +468,12 @@ function load_more_review(){
 									<br>';
 									if( $client['reply'] != '' && $client['reply'] != null){ 
 										$return_v .='
-										<span data-toggle="popover" data-placement="top" title="'.$client['reviewer_name'].'  <a href=\'#\' class=\'close\' data-dismiss=\'alert\'>&times;</a>" data-content="'.$client['reply'].'" 
-											style="cursor:pointer;font-size:13px;">1 <i class="fa fa-fw fa-comments"></i> 
+										<span data-toggle="popover" data-placement="top" title="Reply from an expert  <a href=\'#\' class=\'close\' data-dismiss=\'alert\'>&times;</a>" data-content="'.$client['reply'].'" style="cursor:pointer;font-size:13px;">
+											<a>
+												1 
+												<i class="fa fa-fw fa-comments"></i> 
+												Click to Read Experts Reply
+											</a>
 										<span>';
 									}
 								$return_v .='</p>

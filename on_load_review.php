@@ -89,6 +89,9 @@ $pageLimit = 9;
 		margin-right: -4px;
 	}
 
+	a {
+		text-decoration: none;
+	}
 	@media only screen and (min-width: 1168px) {
 		.entry .entry-content > *,
 		.entry .entry-summary > * {
@@ -116,30 +119,33 @@ if (array_key_exists("category",$rv_view_data)){
 		$total_c = $wpdb->num_rows;	
 		$rowClt = $wpdb->get_results("select * from ".$dbTable['rvcomment']." where review_status=1 AND act=1 order by id DESC LIMIT ".$pageLimit, ARRAY_A);
 	} else{
-		$rowClt23 = $wpdb->get_results("select * from ".$dbTable['rvcomment']." where review_status=1 AND act=1 AND service_id='".$rv_view_data['category']."'", ARRAY_A);
-		$total_c = $wpdb->num_rows;
 		$where = "AND service_id='".$rv_view_data['category']."'";
-		$rowClt = $wpdb->get_results("select * from ".$dbTable['rvcomment']." where review_status=1 AND act=1 AND service_id='".$rv_view_data['category']."' order by id DESC LIMIT ".$pageLimit, ARRAY_A);
+		$rowClt23 = $wpdb->get_results("select * from ".$dbTable['rvcomment']." where review_status=1 AND act=1 ".$where, ARRAY_A);
+		$total_c = $wpdb->num_rows;
+		$rowClt = $wpdb->get_results("select * from ".$dbTable['rvcomment']." where review_status=1 AND act=1 ".$where." order by id DESC LIMIT ".$pageLimit, ARRAY_A);
 		// $total_c = $wpdb->num_rows;
 		$rowSrv = $wpdb->get_row("select * from ".$dbTable['services']." where id='".$rv_view_data['category']."' ", ARRAY_A);
 		$SrvName = $rowSrv['name'];
 	}
-} else if (array_key_exists("clientid",$rv_view_data)) {
-	$rowClt = $wpdb->get_results("select * from ".$dbTable['rvcomment']." where review_status=1 AND act=1 AND client_id='".$rv_view_data['clientid']."' order by id DESC ", ARRAY_A);
+} 
+
+if (array_key_exists("clientid",$rv_view_data)) {
+	$where = "AND client_id='".$rv_view_data['clientid']."'";
+	$rowClt = $wpdb->get_results("select * from ".$dbTable['rvcomment']." where review_status=1 AND act=1 ".$where." order by id DESC ", ARRAY_A);
 	$total_c = $wpdb->num_rows;
 	$rowClient = $wpdb->get_row("select * from ".$dbTable['client']." where id='".$rv_view_data['clientid']."' ", ARRAY_A);
-	$where = "AND client_id='".$rv_view_data['clientid']."'";
-	$GetRow = $wpdb->get_row("select * from ".$dbTable['rvcomment']." where review_status=1 AND client_id='".$rv_view_data['clientid']."' AND act=1 order by id DESC LIMIT 1", ARRAY_A);
+	$GetRow = $wpdb->get_row("select * from ".$dbTable['rvcomment']." where review_status=1 ".$where." AND act=1 order by id DESC LIMIT 1", ARRAY_A);
 	$rowSrv = $wpdb->get_row("select * from ".$dbTable['services']." where id='".$GetRow['service_id']."' ", ARRAY_A);
 	$SrvName = $rowSrv['name'];
 	$date = date_parse_from_format("Y-m-d h:i:s", $rowClient['datetime']);
 	$time = mktime($date['hour'], $date['minute'], $date['second'], $date['month'], $date['day'], $date['year']);
 	$add_date = date('M d, Y', $time);
-} else {
-	$rowClt = $wpdb->get_results("select * from ".$dbTable['rvcomment']." where review_status=1 AND act=1", ARRAY_A);
-	$total_c = $wpdb->num_rows;
-	$SrvName = 'Multiple Services';
-}
+} 
+// else {
+// 	$rowClt = $wpdb->get_results("select * from ".$dbTable['rvcomment']." where review_status=1 AND act=1", ARRAY_A);
+// 	$total_c = $wpdb->num_rows;
+// 	$SrvName = 'Multiple Services';
+// }
 
 $result = $wpdb->get_results("SELECT sum(review_rating) as total_rv FROM ".$dbTable['rvcomment']." where review_status=1 AND act=1 ".$where );
 $sum = $result[0]->total_rv;
@@ -176,8 +182,12 @@ $return_v .='<div class="row">
 														<br>';
 														if( $client['reply'] != '' && $client['reply'] != null){ 
 															$return_v .='
-															<span  data-toggle="popover" data-placement="top" title="'.$client['reviewer_name'].' <a href=\'#\' class=\'close\' data-dismiss=\'alert\'>&times;</a>" data-content="'.$client['reply'].'"
-																style="cursor:pointer;font-size:13px;">1 <i class="fa fa-fw fa-comments"></i> 
+															<span  data-toggle="popover" data-placement="top" title="Reply from an expert <a href=\'#\' class=\'close\' data-dismiss=\'alert\'>&times;</a>" data-content="'.$client['reply'].'" style="cursor:pointer;font-size:13px;">
+																<a>
+																	1 
+																	<i class="fa fa-fw fa-comments"></i> 
+																	Click to Read Experts Reply
+																</a>
 															<span>';
 														} 
 													$return_v .='</p>
@@ -198,11 +208,30 @@ $return_v .='<div class="row display-load-more-btn">
 				</div>
 			</div>';
 
-$return_v .='
-<script type="application/ld+json">[{"@context":"http:\/\/schema.org","@type":"Review","itemReviewed":{"@type":"LocalBusiness","name":"'.$rowClient['clientName'].'","url": "'.get_permalink(get_the_ID()).'",
-"image": "'.site_url().'/wp-content/plugins/theme-options/img/guarantee-shield-big.png", "priceRange": "££" },
-"reviewRating":{"@type":"aggregateRating","ratingValue":'.round($average,2).',"bestRating":5,"reviewCount":'.$total_c.'},"author":"Users"}]</script>
-';
+$schema['@context'] = "http:\/\/schema.org";
+$schema['@type'] = 'Review';
+$schema['itemReviewed'] = [
+	'@type' => 'LocalBusiness',
+	'name' => ($rowClient['clientName']) ? $rowClient['clientName'] : '-',
+	'url' => get_permalink(get_the_ID()),
+	'image' => site_url('/wp-content/plugins/theme-options/img/guarantee-shield-big.png'),
+	'priceRange' => '££',
+];
+$schema['reviewRating'] = [
+	'@type' => 'aggregateRating',
+	'ratingValue' => round($average,2),
+	'bestRating' => 5,
+	'reviewCount' => $total_c
+];
+$schema['author'] = 'Users';
+
+$return_v .='<script type="application/ld+json">['.json_encode( $schema ).']</script>';
+
+// $return_v .='
+// <script type="application/ld+json">[{"@context":"http:\/\/schema.org","@type":"Review","itemReviewed":{"@type":"LocalBusiness","name":"'.$rowClient['clientName'].'","url": "'.get_permalink(get_the_ID()).'",
+// "image": "'.site_url().'/wp-content/plugins/theme-options/img/guarantee-shield-big.png", "priceRange": "££" },
+// "reviewRating":{"@type":"aggregateRating","ratingValue":'.round($average,2).',"bestRating":5,"reviewCount":'.$total_c.'},"author":"Users"}]</script>
+// ';
 
 $return_v .="<script>
 	
@@ -280,15 +309,15 @@ $return_v .="<script>
 		},
 	
 		600: {
-			items: 3
+			items: 2
 		},
 	
 		1024: {
-			items: 4
+			items: 3
 		},
 	
 		1366: {
-			items: 4
+			items: 3
 		}
 		}
 	});

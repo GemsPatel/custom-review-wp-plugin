@@ -20,7 +20,9 @@ if (array_key_exists("category",$rv_view_data)){
 		$rowSrv = $wpdb->get_row("select * from ".$dbTable['services']." where id='".$rv_view_data['category']."' ", ARRAY_A);
 		$SrvName = $rowSrv['name'];
 	}
-} else if (array_key_exists("clientid",$rv_view_data)) {
+} 
+
+if (array_key_exists("clientid",$rv_view_data)) {
 	$rowClt = $wpdb->get_results("select * from ".$dbTable['rvcomment']." where review_status=1 AND act=1 AND client_id='".$rv_view_data['clientid']."' order by id DESC ", ARRAY_A);
 	$total_c = $wpdb->num_rows;
 	$rowClient = $wpdb->get_row("select * from ".$dbTable['client']." where id='".$rv_view_data['clientid']."' ", ARRAY_A);
@@ -31,11 +33,12 @@ if (array_key_exists("category",$rv_view_data)){
 	$date = date_parse_from_format("Y-m-d h:i:s", $rowClient['datetime']);
 	$time = mktime($date['hour'], $date['minute'], $date['second'], $date['month'], $date['day'], $date['year']);
 	$add_date = date('M d, Y', $time);
-} else {
-	$rowClt = $wpdb->get_results("select * from ".$dbTable['rvcomment']." where review_status=1 AND act=1", ARRAY_A);
-	$total_c = $wpdb->num_rows;
-	$SrvName = 'Multiple Services';
-}
+} 
+// else {
+// 	$rowClt = $wpdb->get_results("select * from ".$dbTable['rvcomment']." where review_status=1 AND act=1", ARRAY_A);
+// 	$total_c = $wpdb->num_rows;
+// 	$SrvName = 'Multiple Services';
+// }
 
 $result = $wpdb->get_results("SELECT sum(review_rating) as total_rv FROM ".$dbTable['rvcomment']." where review_status=1 AND act=1 ".$where );
 $sum = $result[0]->total_rv;
@@ -70,10 +73,12 @@ $return_v ='
 											
 										if($client['reply'] !='' AND $client['reply'] !=null){ 
 											$return_v .='
-												<span data-toggle="popover" data-placement="top" title="Reply from expert" data-content="'.$client['reply'].'" 
-													style="cursor:pointer;font-size:13px;" >1 
-													<i class="fa fa-fw fa-comments"></i> 
-													<a>Click to Read Experts Reply</a>
+												<span data-toggle="popover" data-placement="top" title="Reply from expert" data-content="'.$client['reply'].'" style="cursor:pointer;font-size:13px;" >
+													<a>
+														1 
+														<i class="fa fa-fw fa-comments"></i> 
+														Click to Read Experts Reply
+													</a>
 												<span>';
 										}
 										$return_v .='</p>
@@ -100,10 +105,30 @@ $return_v ='
 						<a type="button" class="btn btn-primary" href="'.$url.'" target="_blank">Load All</a>
 					</div>
 				</div>';
-	$return_v .='
-	<script type="application/ld+json">[{"@context":"http:\/\/schema.org","@type":"Review","itemReviewed":{"@type":"LocalBusiness","name":"'.$rowClient['clientName'].'","url": "'.get_permalink(get_the_ID()).'",
-	"image": "'.site_url().'/wp-content/plugins/theme-options/img/guarantee-shield-big.png", "priceRange": "££" },"reviewRating":{"@type":"aggregateRating","ratingValue":'.round($average,2).',"bestRating":5,"reviewCount":'.$total_c.'},"author":"Users"}]</script>
-	';
+	$schema['@context'] = "http:\/\/schema.org";
+	$schema['@type'] = 'Review';
+	$schema['itemReviewed'] = [
+		'@type' => 'LocalBusiness',
+		'name' => ($rowClient['clientName']) ? $rowClient['clientName'] : '-',
+		'url' => get_permalink(get_the_ID()),
+		'image' => site_url('/wp-content/plugins/theme-options/img/guarantee-shield-big.png'),
+		'priceRange' => '££',
+	];
+	$schema['reviewRating'] = [
+		'@type' => 'aggregateRating',
+		'ratingValue' => round($average,2),
+		'bestRating' => 5,
+		'reviewCount' => $total_c
+	];
+	$schema['author'] = 'Users';
+	// echo json_encode( $schema );
+	
+	$return_v .='<script type="application/ld+json">['.json_encode( $schema ).']</script>';
+
+	// $return_v .='
+	// <script type="application/ld+json">[{"@context":"http:\/\/schema.org","@type":"Review","itemReviewed":{"@type":"LocalBusiness","name":"'.$rowClient['clientName'].'","url": "'.get_permalink(get_the_ID()).'",
+	// "image": "'.site_url().'/wp-content/plugins/theme-options/img/guarantee-shield-big.png", "priceRange": "££" },"reviewRating":{"@type":"aggregateRating","ratingValue":'.round($average,2).',"bestRating":5,"reviewCount":'.$total_c.'},"author":"Users"}]</script>
+	// ';
 $return_v .="<script>
    jQuery(document).ready(function($) {
 	   var owl = $('.owl-carousel');
