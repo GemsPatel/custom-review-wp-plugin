@@ -114,11 +114,14 @@ $dbTable = [
 $rowClient['clientName'] = '';
 $where = "";
 if (array_key_exists("category",$rv_view_data)){
+	// echo "<br>Category key exist";
 	if( $rv_view_data['category'] == 0 ){
+		// echo "<br>Category not exist";
 		$rowClt23 = $wpdb->get_results("select * from ".$dbTable['rvcomment']." where review_status=1 AND act=1", ARRAY_A);	
 		$total_c = $wpdb->num_rows;	
 		$rowClt = $wpdb->get_results("select * from ".$dbTable['rvcomment']." where review_status=1 AND act=1 order by id DESC LIMIT ".$pageLimit, ARRAY_A);
 	} else{
+		// echo "<bt>Category exist";
 		$where = "AND service_id='".$rv_view_data['category']."'";
 		$rowClt23 = $wpdb->get_results("select * from ".$dbTable['rvcomment']." where review_status=1 AND act=1 ".$where, ARRAY_A);
 		$total_c = $wpdb->num_rows;
@@ -127,9 +130,8 @@ if (array_key_exists("category",$rv_view_data)){
 		$rowSrv = $wpdb->get_row("select * from ".$dbTable['services']." where id='".$rv_view_data['category']."' ", ARRAY_A);
 		$SrvName = $rowSrv['name'];
 	}
-} 
-
-if (array_key_exists("clientid",$rv_view_data)) {
+} else if (array_key_exists( "clientid", $rv_view_data ) ) {
+	// echo "<br>Client ID key exist";
 	$where = "AND client_id='".$rv_view_data['clientid']."'";
 	$rowClt = $wpdb->get_results("select * from ".$dbTable['rvcomment']." where review_status=1 AND act=1 ".$where." order by id DESC ", ARRAY_A);
 	$total_c = $wpdb->num_rows;
@@ -146,12 +148,12 @@ if (array_key_exists("clientid",$rv_view_data)) {
 // 	$total_c = $wpdb->num_rows;
 // 	$SrvName = 'Multiple Services';
 // }
-
+// die;
 $result = $wpdb->get_results("SELECT sum(review_rating) as total_rv FROM ".$dbTable['rvcomment']." where review_status=1 AND act=1 ".$where );
 $sum = $result[0]->total_rv;
 $average = 0;
 if($sum && $total_c ) {
-	$average = ceil( $sum/$total_c );
+	$average = round( $sum/$total_c );
 }
 
 $return_v .='<div class="row">
@@ -182,7 +184,7 @@ $return_v .='<div class="row">
 														<br>';
 														if( $client['reply'] != '' && $client['reply'] != null){ 
 															$return_v .='
-															<span  data-toggle="popover" data-placement="top" title="Reply from an expert <a href=\'#\' class=\'close\' data-dismiss=\'alert\'>&times;</a>" data-content="'.$client['reply'].'" style="cursor:pointer;font-size:13px;">
+															<span  data-toggle="popover" data-placement="top" title="Reply from expert <a href=\'#\' class=\'close\' data-dismiss=\'alert\'>&times;</a>" data-content="'.$client['reply'].'" style="cursor:pointer;font-size:13px;">
 																<a>
 																	1 
 																	<i class="fa fa-fw fa-comments"></i> 
@@ -208,7 +210,7 @@ $return_v .='<div class="row display-load-more-btn">
 				</div>
 			</div>';
 
-$schema['@context'] = "http:\/\/schema.org";
+// $schema['context'] = "http:\/\/schema.org";
 $schema['@type'] = 'Review';
 $schema['itemReviewed'] = [
 	'@type' => 'LocalBusiness',
@@ -219,7 +221,7 @@ $schema['itemReviewed'] = [
 ];
 $schema['reviewRating'] = [
 	'@type' => 'aggregateRating',
-	'ratingValue' => round($average,2),
+	'ratingValue' => $average,
 	'bestRating' => 5,
 	'reviewCount' => $total_c
 ];
@@ -233,6 +235,34 @@ $return_v .='<script type="application/ld+json">['.json_encode( $schema ).']</sc
 // "reviewRating":{"@type":"aggregateRating","ratingValue":'.round($average,2).',"bestRating":5,"reviewCount":'.$total_c.'},"author":"Users"}]</script>
 // ';
 
+$return_v .='<div class="" style="padding-left:15px; padding-right:15px;">
+<div class="row">
+	<div class="col-sm-12" style="padding:0;">
+	<div class="">
+			<div class="info-box badge-file" style="max-width:280px;">
+			<span class="info-box-icon bg-white"><img src="'.plugin_dir_url( __FILE__ ).'assets/star/img/sheild.png"></span>
+			<div class="info-box-content">
+				<span class="info-box-text" style="color: #7a7a7a;"><b>Overall Rating</b></span>
+				<span class="box_rating_wrapper"><b style="color: #e88b02;font-size: 17px;" >'.$average.'&nbsp;</b>
+											'.rv_star($average,'overall-rating-text-'.rand(111, 999)).' 
+												&nbsp;
+											</span>
+				<span  style="color: #7a7a7a;" class="info-box-text">Based on '.$total_c.' Reviews</span>
+			</div><!-- /.info-box-content -->
+			</div><!-- /.info-box -->
+		</div>
+		</div>
+	</div>
+</div>';
+
+$return_v .= '<div class="col-md-12">
+				<div class="row">
+					<div class="rv_text over_all_rating_text" style="font-weight:600;">
+						Overall Rating: '.rv_star( $average,'overall-rating-text-'.rand(111, 999)).' ('.$average.') Based on '.$total_c.' reviews 
+					</div>
+				</div>
+			</div>';
+			
 $return_v .="<script>
 	
 	jQuery('#load-more').click(function() {

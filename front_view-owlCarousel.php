@@ -105,7 +105,7 @@ $return_v ='
 						<a type="button" class="btn btn-primary" href="'.$url.'" target="_blank">Load All</a>
 					</div>
 				</div>';
-	$schema['@context'] = "http:\/\/schema.org";
+	$schema['context'] = "http:\/\/schema.org";
 	$schema['@type'] = 'Review';
 	$schema['itemReviewed'] = [
 		'@type' => 'LocalBusiness',

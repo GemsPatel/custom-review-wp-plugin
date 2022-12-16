@@ -20,9 +20,7 @@ if (array_key_exists("category",$rv_view_data)){
 		$rowSrv = $wpdb->get_row("select * from ".$dbTable['services']." where id='".$rv_view_data['category']."' ", ARRAY_A);
 		$SrvName = $rowSrv['name'];
 	}
-} 
-
-if (array_key_exists("clientid",$rv_view_data)) {
+} else if (array_key_exists("clientid",$rv_view_data)) {
 	$where = "AND client_id='".$rv_view_data['clientid']."'";
 	$rowClt = $wpdb->get_results("select * from ".$dbTable['rvcomment']." where review_status=1 AND act=1 ".$where." order by id DESC ", ARRAY_A);
 	$total_c = $wpdb->num_rows;
@@ -43,8 +41,8 @@ if (array_key_exists("clientid",$rv_view_data)) {
 $result = $wpdb->get_results("SELECT sum(review_rating) as total_rv FROM ".$dbTable['rvcomment']." where review_status=1 AND act=1 ".$where );
 $sum = $result[0]->total_rv;
 $average = 0;
-if($sum !='0' AND $total_c !='0') {
-	$average = $sum/$total_c;
+if($sum != 0 AND $total_c != 0 ) {
+	$average = round( $sum/$total_c, 2 );
 }
 
 $return_v ='
@@ -109,7 +107,7 @@ $return_v ='
 					</div>
 				</div>';
 
-	$schema['@context'] = "http:\/\/schema.org";
+	// $schema['context'] = "http:\/\/schema.org";
 	$schema['@type'] = 'Review';
 	$schema['itemReviewed'] = [
 		'@type' => 'LocalBusiness',
@@ -133,6 +131,35 @@ $return_v ='
 	// <script type="application/ld+json">[{"@context":"http:\/\/schema.org","@type":"Review","itemReviewed":{"@type":"LocalBusiness","name":"'.$rowClient['clientName'].'","url": "'.get_permalink(get_the_ID()).'",
 	// "image": "'.site_url().'/wp-content/plugins/theme-options/img/guarantee-shield-big.png", "priceRange": "££" },"reviewRating":{"@type":"aggregateRating","ratingValue":'.round($average,2).',"bestRating":5,"reviewCount":'.$total_c.'},"author":"Users"}]</script>
 	// ';
+
+	$return_v .='<div class="" style="padding-left:15px; padding-right:15px;">
+	<div class="row">
+		<div class="col-sm-12" style="padding:0;">
+		<div class="">
+				<div class="info-box badge-file" style="max-width:280px;">
+				<span class="info-box-icon bg-white"><img src="'.plugin_dir_url( __FILE__ ).'assets/star/img/sheild.png"></span>
+				<div class="info-box-content">
+					<span class="info-box-text" style="color: #7a7a7a;"><b>Overall Rating</b></span>
+					<span class="box_rating_wrapper"><b style="color: #e88b02;font-size: 17px;" >'.$average.'&nbsp;</b>
+												'.rv_star($average,'overall-rating-text-'.rand(111, 999)).' 
+													&nbsp;
+												</span>
+					<span  style="color: #7a7a7a;" class="info-box-text">Based on '.$total_c.' Reviews</span>
+				</div><!-- /.info-box-content -->
+				</div><!-- /.info-box -->
+			</div>
+			</div>
+		</div>
+	</div>';
+	
+	$return_v .= '<div class="col-md-12">
+					<div class="row">
+						<div class="rv_text over_all_rating_text" style="font-weight:600;">
+							Overall Rating: '.rv_star( $average,'overall-rating-text-'.rand(111, 999)).' ('.$average.') Based on '.$total_c.' reviews 
+						</div>
+					</div>
+				</div>';
+
 $return_v .="<script>
    jQuery(document).ready(function($) {
 	   var owl = $('.owl-carousel');

@@ -109,7 +109,7 @@ function time_elapsed_string($datetime, $full = false) {
     return $string ? implode(', ', $string) . ' ago' : 'just now';
 }
 
-function rv_star($star_no,$class)
+function rv_star( $star_no, $class )
 {
 	$star_no = $star_no ? $star_no : 0;
 	if($star_no == 0){
@@ -138,7 +138,8 @@ function rv_star($star_no,$class)
 		if($star_no >= 4.51 && $star_no <= 4.75 ){ $review = 92; }
 		if($star_no >= 4.76 && $star_no <= 5 ){  $review = 100; }
 	}  
-	return $return = '
+
+	return '
 	<style>
 		.Stars.'.$class.'::after {
 				width:  '.$review.'%;
@@ -468,7 +469,7 @@ function load_more_review(){
 									<br>';
 									if( $client['reply'] != '' && $client['reply'] != null){ 
 										$return_v .='
-										<span data-toggle="popover" data-placement="top" title="Reply from an expert  <a href=\'#\' class=\'close\' data-dismiss=\'alert\'>&times;</a>" data-content="'.$client['reply'].'" style="cursor:pointer;font-size:13px;">
+										<span data-toggle="popover" data-placement="top" title="Reply from expert  <a href=\'#\' class=\'close\' data-dismiss=\'alert\'>&times;</a>" data-content="'.$client['reply'].'" style="cursor:pointer;font-size:13px;">
 											<a>
 												1 
 												<i class="fa fa-fw fa-comments"></i> 
