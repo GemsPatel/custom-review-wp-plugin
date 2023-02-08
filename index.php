@@ -115,37 +115,16 @@ function rv_star( $star_no, $class )
 	if($star_no == 0){
 		$review = 0;	
 	}else{
-		//$review = round($star_no * 100/5,2);
-		$review = 0;
-		if($star_no >= 0.01 && $star_no <= 0.25 ){ $review = 8; }
-		if($star_no >= 0.26 && $star_no <= 0.50 ){ $review = 10; }
-		if($star_no >= 0.51 && $star_no <= 0.75 ){ $review = 12; }
-		if($star_no >= 0.76 && $star_no <= 1 ){ $review = 20; }
-		if($star_no >= 1.01 && $star_no <= 1.25 ){ $review = 28; }
-		if($star_no >= 1.26 && $star_no <= 1.50 ){ $review = 30; }
-		if($star_no >= 1.51 && $star_no <= 1.75 ){ $review = 32; }
-		if($star_no >= 1.76 && $star_no <= 2 ){ $review = 40; }
-		if($star_no >= 2.01 && $star_no <= 2.25 ){ $review = 48; }
-		if($star_no >= 2.26 && $star_no <= 2.50 ){ $review = 50; }
-		if($star_no >= 2.51 && $star_no <= 2.75 ){ $review = 52; }
-		if($star_no >= 2.76 && $star_no <= 3 ){ $review = 60; }
-		if($star_no >= 3.01 && $star_no <= 3.25 ){ $review = 68; }
-		if($star_no >= 3.26 && $star_no <= 3.50 ){ $review = 70; }
-		if($star_no >= 3.51 && $star_no <= 3.75 ){ $review = 72; }
-		if($star_no >= 3.76 && $star_no <= 4 ){ $review = 80; }
-		if($star_no >= 4.01 && $star_no <= 4.25 ){ $review = 88; }
-		if($star_no >= 4.26 && $star_no <= 4.50 ){ $review = 90; }
-		if($star_no >= 4.51 && $star_no <= 4.75 ){ $review = 92; }
-		if($star_no >= 4.76 && $star_no <= 5 ){  $review = 100; }
+		$review = number_format( ( ( $star_no * 100 ) / 5 ) , 2 );
 	}  
 
 	return '
-	<style>
-		.Stars.'.$class.'::after {
-				width:  '.$review.'%;
+		<style>
+			.Stars.'.$class.'::after {
+				width:'.$review.'%;
 			}
-	</style>
-	<span class="Stars '.$class.'" style="--rating: '.$star_no.'" data-width="'.$review.'" aria-label="Rating of this product."></span>';
+		</style>
+		<span class="Stars '.$class.'" style="--rating: '.$star_no.'" data-width="'.$review.'" aria-label="Rating of this product."></span>';
 }
 
 function pending_count()
@@ -165,13 +144,13 @@ function pending_count()
 function general_option_fun()
 {
    global $wpdb;
-	include'general-options.php';
+	include 'general-options.php';
 }  
 
 function category_fun()
 {
 	global $wpdb;
-	include'category.php';   
+	include 'category.php';   
 }  
 
 function rev_custom($rv_view_data)
@@ -181,13 +160,13 @@ function rev_custom($rv_view_data)
 		//
 	} else {
 		if($GLOBALS['short_code_check'] == 0){
-			include'header.php';
+			include 'header.php';
 			$GLOBALS['short_code_check'] = 1;
 		}
 	}
 
 	if( isset( $GLOBALS['_GET']['view'] ) && $GLOBALS['_GET']['view'] == "all" ){
-		include'view_all.php';
+		include 'view_all.php';
 	} else if( isset( $GLOBALS['_GET']['view'] ) && $GLOBALS['_GET']['view'] == "onLoad" ){
 		include 'front_view.php';
 	} else {
@@ -201,23 +180,91 @@ function rev_badge($rv_badge_data)
 {	  
 	global $wpdb;
 	if($GLOBALS['short_code_check'] == 0){
-	   include'header.php';
+	   include 'header.php';
 		$GLOBALS['short_code_check'] = 1;
 	}
 
-	include'badge.php';
-	return $return_bedge;
+	$data = getPageCategoryWithClientData( $rv_badge_data );
+
+	return '<div class="" style="padding-left:15px; padding-right:15px;">
+				<div class="row">
+					<div class="col-sm-12" style="padding:0;">
+						<div class="">
+							<div class="info-box badge-file" style="max-width:280px;">
+							<span class="info-box-icon bg-white">
+								<img src="'.plugin_dir_url( __FILE__ ).'assets/star/img/sheild.png">
+							</span>
+							<div class="info-box-content">
+								<span class="info-box-text" style="color: #7a7a7a;"><b>Overall Rating</b></span>
+								<span class="box_rating_wrapper">
+									<b style="color: #e88b02;font-size: 17px;" >'.$data['average'].' </b>
+									'.rv_star($data['average'],'overall-rating-text-'.rand(111, 999)).'
+								</span>
+								<span  style="color: #7a7a7a;" class="info-box-text">Based on '.$data['total_c'].' Reviews</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>';
+}
+
+/**
+ * Get common real/reloaded category with client data
+ */
+function getPageCategoryWithClientData( $rv_data ){
+	global $wpdb;
+
+	$where = "";
+	$total_c = 0;
+	if ( array_key_exists( "category", $rv_data ) ){
+		if( $rv_data['category'] == 0 ){
+			$rowClt23 = $wpdb->get_results("select * from ".$wpdb->prefix.'rvcomment'." where review_status=1 AND act=1", ARRAY_A);	
+			$total_c = $wpdb->num_rows;	
+		} else{
+			$where = "AND service_id='".$rv_data['category']."'";
+			$rowClt23 = $wpdb->get_results("select * from ".$wpdb->prefix.'rvcomment'." where review_status=1 AND act=1 ".$where, ARRAY_A);
+			$total_c = $wpdb->num_rows;
+		}
+	} 
+	
+	if ( array_key_exists( "clientid", $rv_data ) ) {
+		$where = "AND client_id='".$rv_data['clientid']."'";
+		$rowClt = $wpdb->get_results("select * from ".$wpdb->prefix.'rvcomment'." where review_status=1 AND act=1 ".$where." order by id DESC ", ARRAY_A);
+		$total_c = $wpdb->num_rows;
+	} 
+
+	$result = $wpdb->get_results("SELECT sum(review_rating) as total_rv FROM ".$wpdb->prefix.'rvcomment'." where review_status=1 AND act=1 ".$where );
+	$sum = $result[0]->total_rv;	
+	$average = 0;
+
+	if( $sum > 0 && $total_c > 0 ) {
+		$average = number_format( ( $sum / $total_c ), 2 );
+	}
+
+	return [
+		'average' => $average,
+		'total_c' => $total_c,
+		'sum' => $sum
+	];
 }
 
 function rev_text($rv_badge_data)
 {	  
 	global $wpdb;
 	if($GLOBALS['short_code_check'] == 0){
-	   include'header.php';
+	   include 'header.php';
 	   $GLOBALS['short_code_check'] = 1;
 	}
-	include'review_text.php';
-	return $return;
+	
+	$data = getPageCategoryWithClientData( $rv_badge_data );
+	return '<div class="col-md-12">
+				<div class="row">
+					<div class="rv_text over_all_rating_text" style="font-weight:600;">
+						Overall Rating: '.rv_star( $data['average'],'overall-rating-text-'.rand(111, 999)).' Based on '.$data['total_c'].' reviews 
+					</div>
+				</div>
+			</div>';
 }
 
 function rev_customform($rv_form_data)
@@ -371,18 +418,17 @@ function reviewDataQuery(){
 		}else{
 			$rowClt = $wpdb->get_results("select * from ".$dbTable['rvcomment']." where review_status=1 AND act=1 AND service_id='".$data['rv_view_data']['category']."' order by id DESC ".$limit, ARRAY_A);
 		}
-	} else if (array_key_exists("clientid",$data['rv_view_data'])) {
+	} 
+	
+	if (array_key_exists("clientid",$data['rv_view_data'])) {
 		$rowClt = $wpdb->get_results("select * from ".$dbTable['rvcomment']." where review_status=1 AND act=1 AND client_id='".$data['rv_view_data']['clientid']."' order by id DESC ".$limit, ARRAY_A);
-	} else {
-		$rowClt = $wpdb->get_results("select * from ".$dbTable['rvcomment']." where review_status=1 AND act=1 ".$limit, ARRAY_A);
 	}
 	
-	// echo $wpdb->last_query;
 	return $rowClt;
 }
 
-function load_slider_review(){
-	$rowClt = reviewDataQuery();
+function load_slider_review( ){
+	$rowClt = reviewDataQuery( );
 	$return_v ='<div class="owl-carousel owl-theme">'; 
 	foreach($rowClt as $client) {
 		$return_v .='

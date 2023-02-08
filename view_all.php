@@ -113,11 +113,7 @@ $return_v .="<script>
 	}
 
 	jQuery(document).ready(function($){
-		$('[data-toggle=";?> <?php $return_v .='"popover"'; ?><?php $return_v .="]').popover();   
-		$('.Stars').each(function(){
-			var wd = $(this).data('width');
-			//$(this+':after').css('width', wd+'%');
-		});
+		$('[data-toggle=";?> <?php $return_v .='"popover"'; ?><?php $return_v .="]').popover();
 	});
 </script>
 "; ?>                                		                                                    		                            

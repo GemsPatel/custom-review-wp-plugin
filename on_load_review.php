@@ -3,100 +3,20 @@ global $wp_query;
 $pageLimit = 9;
 ?>
 <style>
-	:root {
-		--star-color: #e88b02;
-		--star-background: #e88b02;
-	}
-	.Stars {
-		--percent: calc(var(--rating) / 5 * 100%);
-		display: inline-block;
-		font-family: Times;  
-		line-height: 1;
-		position: relative;
-		font-weight: 800;
-		font-size: 115%;
-		*transform: scale(1.3);
-		transform-origin: center;
-	}
-	.Stars::before {
-		content: "☆☆☆☆☆";
-		letter-spacing: 0px;
-		background: linear-gradient(90deg, var(--star-background) var(--percent), var(--star-color) var(--percent));
-		-webkit-background-clip: text;
-		-webkit-text-fill-color: transparent;
-		font-weight:100;
-		white-space: nowrap;
-	}
-	.Stars::after {
-		content: "★★★★★";
-		letter-spacing: 0px;
-		background: linear-gradient(90deg, var(--star-background) var(--percent), var(--star-color) var(--percent));
-		-webkit-background-clip: text;
-		-webkit-text-fill-color: transparent;
-		position: absolute;
-		left: 0;
-		font-weight:100;
-		white-space: nowrap;
-	}
-	.owl-nav button {
-	position: absolute;
-	top: 50%;
-	background-color: #000;
-	color: #fff;
-	margin: 0;
-	transition: all 0.3s ease-in-out;
-	}
-	.owl-nav button.owl-prev {
-	left: 0;
-	}
-	.owl-nav button.owl-next {
-	right: 0;
-	}
-	.owl-dots {
-	text-align: center;
-	padding-top: 15px;
-	}
-	.owl-dots button.owl-dot {
-	width: 10px;
-	height: 10px;
-	border-radius: 50%;
-	display: inline-block;
-	background: #ccc;
-	margin: 0 3px;
-	}
-	.owl-dots button.owl-dot.active {
-	background-color: #000;
-	}
-	.owl-dots button.owl-dot:focus {
-	outline: none;
-	}
-	.owl-nav button {
-		position: absolute;
-		top: 50%;
-		transform: translateY(-50%);
-		background: rgba(255, 255, 255, 0.38) !important;
-	}
-	.owl-nav button:focus {
-		outline: none;
-	}
-	.owl-prev, .owl-next {
-		display: none;
-	}
-
-	.entry .entry-content a.button, .entry .entry-content a {
-		text-decoration: none;
-		margin-top: -4px;
-		margin-right: -4px;
-	}
-
-	a {
-		text-decoration: none;
-	}
+	.owl-nav button { position: absolute; top: 50%; background-color: #000; color: #fff; margin: 0; transition: all 0.3s ease-in-out; }
+	.owl-nav button.owl-prev { left: 0; }
+	.owl-nav button.owl-next { right: 0; }
+	.owl-dots { text-align: center; padding-top: 15px; }
+	.owl-dots button.owl-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; background: #ccc; margin: 0 3px; }
+	.owl-dots button.owl-dot.active { background-color: #000; }
+	.owl-dots button.owl-dot:focus { outline: none; }
+	.owl-nav button { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255, 255, 255, 0.38) !important; }
+	.owl-nav button:focus { outline: none; }
+	.owl-prev, .owl-next { display: none; }
+	.entry .entry-content a.button, .entry .entry-content a { text-decoration: none; margin-top: -4px; margin-right: -4px; }
+	a{text-decoration: none; }
 	@media only screen and (min-width: 1168px) {
-		.entry .entry-content > *,
-		.entry .entry-summary > * {
-			max-width: 100vw !important;
-		}
+		.entry .entry-content > *, .entry .entry-summary > * { max-width: 100vw !important; }
 	}
 </style>
 <script type="application/json" src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js"></script>
@@ -114,24 +34,22 @@ $dbTable = [
 $rowClient['clientName'] = '';
 $where = "";
 if (array_key_exists("category",$rv_view_data)){
-	// echo "<br>Category key exist";
 	if( $rv_view_data['category'] == 0 ){
-		// echo "<br>Category not exist";
 		$rowClt23 = $wpdb->get_results("select * from ".$dbTable['rvcomment']." where review_status=1 AND act=1", ARRAY_A);	
 		$total_c = $wpdb->num_rows;	
 		$rowClt = $wpdb->get_results("select * from ".$dbTable['rvcomment']." where review_status=1 AND act=1 order by id DESC LIMIT ".$pageLimit, ARRAY_A);
 	} else{
-		// echo "<bt>Category exist";
 		$where = "AND service_id='".$rv_view_data['category']."'";
 		$rowClt23 = $wpdb->get_results("select * from ".$dbTable['rvcomment']." where review_status=1 AND act=1 ".$where, ARRAY_A);
 		$total_c = $wpdb->num_rows;
 		$rowClt = $wpdb->get_results("select * from ".$dbTable['rvcomment']." where review_status=1 AND act=1 ".$where." order by id DESC LIMIT ".$pageLimit, ARRAY_A);
-		// $total_c = $wpdb->num_rows;
 		$rowSrv = $wpdb->get_row("select * from ".$dbTable['services']." where id='".$rv_view_data['category']."' ", ARRAY_A);
 		$SrvName = $rowSrv['name'];
+		$rowClient = $wpdb->get_row("select * from ".$dbTable['client']." where id='".$rv_view_data['clientid']."' ", ARRAY_A);
 	}
-} else if (array_key_exists( "clientid", $rv_view_data ) ) {
-	// echo "<br>Client ID key exist";
+} 
+
+if (array_key_exists( "clientid", $rv_view_data ) ) {
 	$where = "AND client_id='".$rv_view_data['clientid']."'";
 	$rowClt = $wpdb->get_results("select * from ".$dbTable['rvcomment']." where review_status=1 AND act=1 ".$where." order by id DESC ", ARRAY_A);
 	$total_c = $wpdb->num_rows;
@@ -143,16 +61,11 @@ if (array_key_exists("category",$rv_view_data)){
 	$time = mktime($date['hour'], $date['minute'], $date['second'], $date['month'], $date['day'], $date['year']);
 	$add_date = date('M d, Y', $time);
 } 
-// else {
-// 	$rowClt = $wpdb->get_results("select * from ".$dbTable['rvcomment']." where review_status=1 AND act=1", ARRAY_A);
-// 	$total_c = $wpdb->num_rows;
-// 	$SrvName = 'Multiple Services';
-// }
-// die;
+
 $result = $wpdb->get_results("SELECT sum(review_rating) as total_rv FROM ".$dbTable['rvcomment']." where review_status=1 AND act=1 ".$where );
 $sum = $result[0]->total_rv;
 $average = 0;
-if($sum && $total_c ) {
+if( $sum > 0 && $total_c > 0 ) {
 	$average = round( $sum/$total_c );
 }
 
@@ -160,109 +73,67 @@ $return_v .='<div class="row">
 				<div class="col-sm-12">
 					<div class="owl-slider">
 						<div id="load_all_slider_review" class="owl-carousel">';
-							foreach($rowClt as $client) {
-								$return_v .='
-								<div class="item">
-									<div class="media">
-										<div class="media-body">
-											<div class="testimonial" >
-												<p>
-													<span class="star-box">
-														'.rv_star($client['review_rating'],'slider'.$client['id'].'_'.rand()).' 
-													</span>
-													<span itemprop="reviewBody">
-														'.$client['review_text'].'
-													</span>
-												</p>
-											</div>
-											<div class="user">
-												<div class="user-profile" style="background: #'.rand( 000000,999999 ).';">'.$client['reviewer_name'][0].'</div>
-													<p class="overview"> 
-														<span>
-															<b class="u_name" itemprop="name">'.$client['reviewer_name'].'</b> 
-														</span> 
-														<br>';
-														if( $client['reply'] != '' && $client['reply'] != null){ 
-															$return_v .='
-															<span  data-toggle="popover" data-placement="top" title="Reply from expert <a href=\'#\' class=\'close\' data-dismiss=\'alert\'>&times;</a>" data-content="'.$client['reply'].'" style="cursor:pointer;font-size:13px;">
-																<a>
-																	1 
-																	<i class="fa fa-fw fa-comments"></i> 
-																	Click to Read Experts Reply
-																</a>
-															<span>';
-														} 
-													$return_v .='</p>
+							foreach($rowClt as $k=>$client) {
+								if( $k < 9 ){
+									$return_v .='
+									<div class="item">
+										<div class="media">
+											<div class="media-body">
+												<div class="testimonial" >
+													<p>
+														<span class="star-box">
+															'.rv_star( $client['review_rating'], 'slider'.$client['id'].'_'.rand() ).' 
+														</span>
+														<span itemprop="reviewBody">
+															'.$client['review_text'].'
+														</span>
+													</p>
+												</div>
+												<div class="user">
+													<div class="user-profile" style="background: #'.rand( 000000,999999 ).';">'.$client['reviewer_name'][0].'</div>
+														<p class="overview"> 
+															<span>
+																<b class="u_name" itemprop="name">'.$client['reviewer_name'].'</b> 
+															</span> 
+															<br>';
+															if( $client['reply'] != '' && $client['reply'] != null){ 
+																$return_v .='
+																<span  data-toggle="popover" data-placement="top" title="Reply from expert <a href=\'#\' class=\'close\' data-dismiss=\'alert\'>&times;</a>" data-content="'.$client['reply'].'" style="cursor:pointer;font-size:13px;">
+																	<a>
+																		1 
+																		<i class="fa fa-fw fa-comments"></i> 
+																		Click to Read Experts Reply
+																	</a>
+																<span>';
+															} 
+														$return_v .='</p>
+													</div>
 												</div>
 											</div>
-										</div>
-									</div>';
+										</div>';
+								}
 							}
 						$return_v .='</div>
 					</div>
 				</div>
 			</div>';
-$return_v .='<div class="load-all-review" style="margin-top: 25px;"></div>';
-
-$return_v .='<div class="row display-load-more-btn">
-				<div class="col-md-12 text-center" style="margin-top: 15px;">
-					<button type="button" class="btn btn-primary" id="load-more">Load More</button>
-				</div>
-			</div>';
-
-// $schema['context'] = "http:\/\/schema.org";
-$schema['@type'] = 'Review';
-$schema['itemReviewed'] = [
-	'@type' => 'LocalBusiness',
-	'name' => ($rowClient['clientName']) ? $rowClient['clientName'] : '-',
-	'url' => get_permalink(get_the_ID()),
-	'image' => site_url('/wp-content/plugins/theme-options/img/guarantee-shield-big.png'),
-	'priceRange' => '££',
-];
-$schema['reviewRating'] = [
-	'@type' => 'aggregateRating',
-	'ratingValue' => $average,
-	'bestRating' => 5,
-	'reviewCount' => $total_c
-];
-$schema['author'] = 'Users';
-
-$return_v .='<script type="application/ld+json">['.json_encode( $schema ).']</script>';
-
-// $return_v .='
-// <script type="application/ld+json">[{"@context":"http:\/\/schema.org","@type":"Review","itemReviewed":{"@type":"LocalBusiness","name":"'.$rowClient['clientName'].'","url": "'.get_permalink(get_the_ID()).'",
-// "image": "'.site_url().'/wp-content/plugins/theme-options/img/guarantee-shield-big.png", "priceRange": "££" },
-// "reviewRating":{"@type":"aggregateRating","ratingValue":'.round($average,2).',"bestRating":5,"reviewCount":'.$total_c.'},"author":"Users"}]</script>
-// ';
-
-$return_v .='<div class="" style="padding-left:15px; padding-right:15px;">
-<div class="row">
-	<div class="col-sm-12" style="padding:0;">
-	<div class="">
-			<div class="info-box badge-file" style="max-width:280px;">
-			<span class="info-box-icon bg-white"><img src="'.plugin_dir_url( __FILE__ ).'assets/star/img/sheild.png"></span>
-			<div class="info-box-content">
-				<span class="info-box-text" style="color: #7a7a7a;"><b>Overall Rating</b></span>
-				<span class="box_rating_wrapper"><b style="color: #e88b02;font-size: 17px;" >'.$average.'&nbsp;</b>
-											'.rv_star($average,'overall-rating-text-'.rand(111, 999)).' 
-												&nbsp;
-											</span>
-				<span  style="color: #7a7a7a;" class="info-box-text">Based on '.$total_c.' Reviews</span>
-			</div><!-- /.info-box-content -->
-			</div><!-- /.info-box -->
-		</div>
-		</div>
-	</div>
-</div>';
-
-$return_v .= '<div class="col-md-12">
-				<div class="row">
-					<div class="rv_text over_all_rating_text" style="font-weight:600;">
-						Overall Rating: '.rv_star( $average,'overall-rating-text-'.rand(111, 999)).' ('.$average.') Based on '.$total_c.' reviews 
-					</div>
-				</div>
-			</div>';
 			
+if( count( $rowClt ) > 9 ){
+	$return_v .='<div class="load-all-review" style="margin-top: 25px;"></div>';
+	$return_v .='<div class="row display-load-more-btn">
+					<div class="col-md-12 text-center" style="margin-top: 15px;">
+						<button type="button" class="btn btn-primary" id="load-more">Load More</button>
+					</div>
+				</div>';
+}
+
+$name = ( $rowClient['clientName'] ) ? $rowClient['clientName'] : $SrvName;
+$return_v .='
+<script type="application/ld+json">[{"@context":"http:\/\/schema.org","@type":"Review","itemReviewed":{"@type":"LocalBusiness","name":"'.$name.'","url": "'.get_permalink(get_the_ID()).'",
+"image": "'.site_url().'/wp-content/plugins/theme-options/img/guarantee-shield-big.png", "priceRange": "££" },
+"reviewRating":{"@type":"aggregateRating","ratingValue":'.round($average,2).',"bestRating":5,"reviewCount":'.$total_c.'},"author": {"@type": "Person","name": "Users"}}]</script>
+';
+
 $return_v .="<script>
 	
 	jQuery('#load-more').click(function() {
@@ -270,12 +141,14 @@ $return_v .="<script>
 	});
 
 	function loadSliderReview(){
+		console.log('loadSliderReview');
 		var perpage = $('#per_page').val();
 		var offset = $('#offset').val();
 		var data = {
 			'action' : 'load_slider_review', // the name of your PHP function!
 			'perpage' : perpage,
 			'offset' : offset,
+			'call' : 'loadSliderReview',
 			'rv_view_data' : ".json_encode($rv_view_data)."
 		};
 		
@@ -291,12 +164,14 @@ $return_v .="<script>
 	}
 
 	function loadMoreReview(){
+		console.log('loadMoreReview');
 		var perpage = $('#per_page').val();
 		var offset = $('#offset').val();
 		var data = {
 			'action' : 'load_more_review', // the name of your PHP function!
 			'perpage' : perpage,
 			'offset' : offset,
+			'call' : 'loadMoreReview',
 			'rv_view_data' : ".json_encode($rv_view_data)."
 		};
 		
